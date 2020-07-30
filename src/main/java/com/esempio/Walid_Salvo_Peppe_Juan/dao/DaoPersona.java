@@ -54,4 +54,14 @@ public class DaoPersona extends DaoDBMS {
     public boolean delete(int i) {
         return false;
     }
+
+    @Override
+    public int loadXML(String path) {
+        return 0;
+    }
+
+    @Override
+    public List<Map<String, String>> listMap() {
+        return null;
+    }
 }
