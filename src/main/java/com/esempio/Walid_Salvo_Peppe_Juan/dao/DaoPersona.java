@@ -15,6 +15,8 @@ public class DaoPersona extends DaoDBMS {
     @Autowired
     IDatabase db;
 
+    String table = "persone";
+
 
     @Override
     public List<Entity> list() {
@@ -42,16 +44,26 @@ public class DaoPersona extends DaoDBMS {
 
     @Override
     public Entity load(Entity entity) {
-        //"INSERT INTO Orders (id, userid, timestamp) \n" +
-        //"SELECT Orders.id, Orders.userid, Orders.timestamp FROM Users INNER JOIN Orders ON  Orders.id = Users.id"
 
-        String queryInsert = "c";
-
-        return null;
+        if(entity.getId()>0 && search(entity.getId())==null){
+            String modifiche = caricaMappa(entity.toMap());
+            String query = UPDATE.replace("table",table).replace("[id]",entity.getId()+"").replace("?",modifiche);
+            if(db.execute(query) == -200)
+                return search(entity.getId());
+            else return null;
+        }
+        else
+        {
+            String chiavi = caricaString(entity.toMap().keySet()).replace("'", "");
+            String valori = caricaString(entity.toMap().values());
+            String query = CREATE.replace("table", table).replace("chiavi", chiavi).replace("valori",valori);
+            return search(db.execute(query));
+        }
     }
 
     @Override
-    public boolean delete(int i) {
-        return false;
+    public boolean delete(int id) {
+        String query = DELETE.replace("table", table).replace("[id]",id+"");
+        return db.execute(query) == -200;
     }
 }
